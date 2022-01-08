@@ -2,7 +2,7 @@ package models;
 
 import java.io.Serializable;
 
-public class Customer implements Serializable {
+public class Customer implements Serializable, Comparable<Customer> {
     private int id;
     private String name;
     private String phone;
@@ -35,7 +35,7 @@ public class Customer implements Serializable {
         this.name = name;
     }
 
-    public String setPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
@@ -46,5 +46,10 @@ public class Customer implements Serializable {
     @Override
     public String toString() {
         return this.id + "\t" + this.name + "\t" + this.phone;
+    }
+
+    @Override
+    public int compareTo(Customer o) {
+        return this.phone.compareToIgnoreCase(o.phone);
     }
 }

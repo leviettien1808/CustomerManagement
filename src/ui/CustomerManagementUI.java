@@ -1,12 +1,15 @@
 package ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
+import io.SerializeFileFactory;
 import models.Customer;
 
 public class CustomerManagementUI {
     static ArrayList<Customer> customers = new ArrayList<>();
+
     public void ui() {
         System.out.println("1. Nhập khách hàng");
         System.out.println("2. Xuất khách hàng");
@@ -19,7 +22,11 @@ public class CustomerManagementUI {
         int choose = 0;
         System.out.println("Bạn chọn chức năng [1..8]:");
         Scanner scanner = new Scanner(System.in);
-        choose = scanner.nextInt();
+        try {
+            choose = scanner.nextInt();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
         switch (choose) {
             case 1:
                 importHandling();
@@ -47,9 +54,10 @@ public class CustomerManagementUI {
                 break;
 
             default:
+                System.out.println("Chức năng bạn chọn không đúng.");
                 break;
         }
-        scanner.close();
+        // scanner.close();
     }
 
     private void exitHandling() {
@@ -58,18 +66,46 @@ public class CustomerManagementUI {
     }
 
     private void statisticalHandling() {
+        int n = 0;
+        for (Customer customer : customers) {
+            if (customer.getPhone().startsWith("098")) {
+                n++;
+            }
+        }
+        System.out.println("Có " + n + " khách hàng Viettel");
     }
 
     private void readHandling() {
+        customers = SerializeFileFactory.readFile("D:\\java\\customersData.txt");
+        System.out.println("Đọc file thành công");
     }
 
     private void saveHandling() {
+        boolean result = SerializeFileFactory.saveFile(customers, "D:\\java\\customersData.txt");
+        if (result) {
+            System.out.println("Lưu file thành công");
+        } else {
+            System.out.println("Lưu file thất bại");
+        }
     }
 
     private void sortHandling() {
+        Collections.sort(customers);
+        System.out.println("Đã sắp xếp");
     }
 
     private void findHandling() {
+        // Chức năng: Mời bạn chọn đầu số.
+        String phone = "090";
+        System.out.println("==================================================");
+        System.out.println("Khách hàng có đầu số 090:");
+        System.out.println("Mã\tTên\tSố điện thoại");
+        for (Customer customer : customers) {
+            if (customer.getPhone().startsWith(phone)) {
+                System.out.println(customer);
+            }
+        }
+        System.out.println("==================================================");
     }
 
     private void exportHandling() {
@@ -82,19 +118,25 @@ public class CustomerManagementUI {
     }
 
     private void importHandling() {
-        Customer customer=new Customer();
-        System.out.println("Mời bạn nhập mã:");
-        Scanner scanner=new Scanner(System.in);
-        int id=scanner.nextInt();
-        System.out.println("Mời bạn nhập tên:");
-        String name=scanner.nextLine();
-        name=scanner.nextLine();
-        System.out.println("Mời bạn nhập số điện thoại:");
-        String phone=scanner.nextLine();
+        try {
+            Customer customer = new Customer();
+            System.out.println("Mời bạn nhập mã:");
+            Scanner scanner = new Scanner(System.in);
+            int id = scanner.nextInt();
+            System.out.println("Mời bạn nhập tên:");
+            String name = scanner.nextLine();
+            name = scanner.nextLine();
+            System.out.println("Mời bạn nhập số điện thoại:");
+            String phone = scanner.nextLine();
 
-        customer.setId(id);
-        customer.setName(name);
-        customer.setPhone(phone);
-        customers.add(customer);
+            customer.setId(id);
+            customer.setName(name);
+            customer.setPhone(phone);
+            customers.add(customer);
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 }
+
+// xóa khách hàng trong 3 tháng gần đây không gọi.
